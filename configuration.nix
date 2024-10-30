@@ -164,6 +164,7 @@
     unzip
     gnumake
     cmake
+    wl-clipboard
   ];
 
   environment.variables.PATH = "${pkgs.clang-tools}/bin:" + builtins.getEnv "PATH";
