@@ -4,7 +4,7 @@
     userName = "KowerKoint";
     userEmail = "kowerkoint@dummy";
     extraConfig = {
-      credential."https://github.com".helper = "!gh auth git-credential";
+      credential.helper = "${pkgs.git.override { withLibsecret = true; }}/bin/git-credential-libsecret";
     };
   };
 

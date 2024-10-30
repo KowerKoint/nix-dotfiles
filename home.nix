@@ -1,6 +1,8 @@
-{
+{ pkgs, ... }: {
   imports = [
     ./git.nix
+    ./development.nix
+    ./apps.nix
   ];
   home = rec {
     username = "kowerkoint";

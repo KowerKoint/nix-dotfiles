@@ -17,8 +17,10 @@
   # Nvidia
   hardware.graphics = {
     enable = true;
+    enable32Bit = true;
   };
   services.xserver.videoDrivers = ["nvidia"];
+  boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = false;
@@ -26,6 +28,9 @@
     open = false;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
+  };
+  hardware.nvidia-container-toolkit = {
+    enable = true;
   };
   
   # Bootloader.
@@ -133,7 +138,7 @@
   users.users.kowerkoint = {
     isNormalUser = true;
     description = "kowerkoint";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker"];
     shell = pkgs.fish;
     packages = with pkgs; [
     #  thunderbird
@@ -152,7 +157,16 @@
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
+    clang-tools
+    libgcc
+    wget
+    curl
+    unzip
+    gnumake
+    cmake
   ];
+
+  environment.variables.PATH = "${pkgs.clang-tools}/bin:" + builtins.getEnv "PATH";
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -184,10 +198,12 @@
   virtualisation = {
     docker = {
       enable = true;
+      /*
       rootless = {
         enable = true;
         setSocketVariable = true;
       };
+      */
     };
   };
 
@@ -216,6 +232,12 @@
     };
     fish = {
       enable = true;
+    };
+    nix-ld = {
+      enable = true;
+      libraries = with pkgs; [
+        stdenv.cc.cc
+      ];
     };
   };
 }
